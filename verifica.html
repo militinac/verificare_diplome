@@ -4,71 +4,38 @@
   <meta charset="UTF-8">
   <title>Verificare diplomă</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      padding: 2em;
-    }
-    .card {
-      background-color: white;
-      padding: 2em;
-      max-width: 500px;
-      margin: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .valid {
-      color: green;
-      font-weight: bold;
-    }
-    .invalid {
-      color: red;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f4f4f4; }
+    #result { margin-top: 2rem; font-size: 18px; }
+    .valid { color: green; }
+    .invalid { color: red; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Verificare diplomă</h2>
-    <div id="output">Se verifică...</div>
-  </div>
+  <h2>Verificare diplomă</h2>
+  <div id="result">Se verifică...</div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
+    const id = new URLSearchParams(window.location.search).get("id");
+    const apiURL = "https://script.google.com/macros/s/AKfycbzxXL7cKsHRnGqATG7lzdJ-c4ObBxGbBd3tlEm-PXC8q7-eZ_oaTlFxYBTsTbLpZTdN/exec?id=" + id;
 
-    if (!id) {
-      document.getElementById('output').innerHTML = "❌ Lipsă ID în linkul de verificare.";
-      document.getElementById('output').className = "invalid";
-    } else {
-      const scriptURL = "https://script.google.com/macros/s/AKfycbyMWQf7KojLoueBnQ9Kjx8cVkZWvHekdk2mPbGiceMDtNlzvkjC2_4Tec0NA2yq9DRH/exec?id=" + encodeURIComponent(id);
-
-      fetch(scriptURL)
-        .then(res => res.json())
-        .then(data => {
-          const output = document.getElementById('output');
-          if (data.valid) {
-            output.innerHTML = `
-              ✅ Diplomă validă<br><br>
-              <strong>Nume:</strong> ${data.nume}<br>
-              <strong>Seria:</strong> ${data.serie}<br>
-              <strong>Curs:</strong> ${data.curs}<br>
-              <strong>Data:</strong> ${data.data}
-            `;
-            output.className = "valid";
-          } else {
-            output.innerHTML = "❌ Diplomă inexistentă sau invalidă.";
-            output.className = "invalid";
-          }
-        })
-        .catch(error => {
-          const output = document.getElementById('output');
-          output.innerHTML = "❌ Eroare la conectare. Încearcă mai târziu.";
-          output.className = "invalid";
-          console.error("Eroare la fetch:", error);
-        });
-    }
+    fetch(apiURL)
+      .then(response => response.json())
+      .then(data => {
+        const r = document.getElementById("result");
+        if (data.valid) {
+          r.innerHTML = `
+            <p><strong>Nume:</strong> ${data.nume}</p>
+            <p><strong>Curs:</strong> ${data.curs}</p>
+            <p><strong>Data:</strong> ${data.data}</p>
+            <p class="valid">✅ Diplomă validă</p>`;
+        } else {
+          r.innerHTML = `<p class="invalid">❌ Diplomă inexistentă sau invalidă</p>`;
+        }
+      })
+      .catch(() => {
+        document.getElementById("result").innerHTML = "<p class='invalid'>❌ Eroare la conectarea la server.</p>";
+      });
   </script>
 </body>
 </html>
+
