@@ -42,7 +42,7 @@
       document.getElementById('output').innerHTML = "❌ Lipsă ID în linkul de verificare.";
       document.getElementById('output').className = "invalid";
     } else {
-      const scriptURL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?id=" + encodeURIComponent(id);
+      const scriptURL = "https://script.google.com/macros/s/AKfycbx8cVXk4JkBTOdy9KgoeN_kdilFRQ1GQQ-CNSAwfIAa-RpJ-24ItW4MrnNP1ppIEhSwfw/exec?id=" + encodeURIComponent(id);
 
       fetch(scriptURL)
         .then(res => res.json())
